@@ -1,0 +1,13 @@
+package license
+
+type LicenseType int8
+
+const (
+	Standard LicenseType = iota
+	CreativeCommonsLicenseNonCommercialAttribution
+	CreativeCommonsLicenseNonCommercialNoDerivatives
+	CreativeCommonsLicenseNonCommercialShareAlike
+	CreativeCommonsLicenseAttribution
+	CreativeCommonsLicenseNoDerivatives
+	CreativeCommonsLicenseShareAlike
+)
