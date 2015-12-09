@@ -13,13 +13,14 @@ type User interface {
 	UpgradeStatus() int
 	FollowersCount() int
 	Affection() int
+	Equals(other User) bool
 }
 
 // UserImpl implements the User interface.
 type UserImpl struct {
 	UserID             int    `json:"id"`
 	UserUsername       string `json:"username"`
-	UserFirstname      string `josn:"firstname"`
+	UserFirstname      string `json:"firstname"`
 	UserLastname       string `json:"lastname"`
 	UserFullname       string `json:"fullname"`
 	UserCity           string `json:"city"`
@@ -86,4 +87,58 @@ func (u *UserImpl) FollowersCount() int {
 // Affection returns the user's affection value
 func (u *UserImpl) Affection() int {
 	return u.UserAffection
+}
+
+// Equals compares the equality of two users. If the two users are the same, then true is returned. Otherwise
+// false is returned.
+func (u *UserImpl) Equals(other User) bool {
+	if other == nil {
+		return false
+	}
+
+	if u.Affection() != other.Affection() {
+		return false
+	}
+
+	if u.City() != other.City() {
+		return false
+	}
+
+	if u.Country() != other.Country() {
+		return false
+	}
+
+	if u.Firstname() != other.Firstname() {
+		return false
+	}
+
+	if u.FollowersCount() != other.FollowersCount() {
+		return false
+	}
+
+	if u.Fullname() != other.Fullname() {
+		return false
+	}
+
+	if u.ID() != other.ID() {
+		return false
+	}
+
+	if u.Lastname() != other.Lastname() {
+		return false
+	}
+
+	if u.UpgradeStatus() != other.UpgradeStatus() {
+		return false
+	}
+
+	if u.Username() != other.Username() {
+		return false
+	}
+
+	if u.UserPicURL() != other.UserPicURL() {
+		return false
+	}
+
+	return true
 }

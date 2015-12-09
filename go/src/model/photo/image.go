@@ -38,3 +38,29 @@ func (image *ImageImpl) Size() Size {
 func (image *ImageImpl) Format() Format {
 	return image.ImageFormat
 }
+
+// Equals compares two images for equality. If the two images are the same then true is returned.
+// Otherwise, false is returned.
+func (image *ImageImpl) Equals(other *ImageImpl) bool {
+	if image == other {
+		return true
+	}
+
+	if other == nil {
+		return false
+	}
+
+	if image.URL() != other.URL() {
+		return false
+	}
+
+	if image.Size() != other.Size() {
+		return false
+	}
+
+	if image.Format() != other.Format() {
+		return false
+	}
+
+	return true
+}

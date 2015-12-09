@@ -53,6 +53,7 @@ type PhotoImpl struct {
 	PhotoDescription        string              `json:"description"`
 	PhotoCamera             string              `json:"camera"`
 	PhotoLens               string              `json:"lens"`
+	PhotoFocalLength        string              `json:"focal_length"`
 	PhotoISO                string              `json:"iso"`
 	PhotoShutterSpeed       string              `json:"shutter_speed"`
 	PhotoAperture           string              `json:"aperture"`
@@ -99,6 +100,10 @@ func (p *PhotoImpl) Camera() string {
 
 func (p *PhotoImpl) Lens() string {
 	return p.PhotoLens
+}
+
+func (p *PhotoImpl) FocalLength() string {
+	return p.PhotoFocalLength
 }
 
 func (p *PhotoImpl) ISO() string {
@@ -201,10 +206,160 @@ func (p *PhotoImpl) Images() []*ImageImpl {
 	return p.PhotoImages
 }
 
-func (p *PhotoImpl) User() user.User {
+func (p *PhotoImpl) User() *user.UserImpl {
 	return p.PhotoUser
 }
 
 func (p *PhotoImpl) CollectionsCount() int {
 	return p.PhotoCollectionsCount
+}
+
+func (p *PhotoImpl) Equals(other *PhotoImpl) bool {
+	if p == other {
+		return true
+	}
+
+	if other == nil {
+		return false
+	}
+
+	if p.Aperture() != other.Aperture() {
+		return false
+	}
+
+	if p.Camera() != other.Camera() {
+		return false
+	}
+
+	if p.Category() != other.Category() {
+		return false
+	}
+
+	if p.CollectionsCount() != other.CollectionsCount() {
+		return false
+	}
+
+	if p.CommentsCount() != other.CommentsCount() {
+		return false
+	}
+
+	if p.CreatedAt() != other.CreatedAt() {
+		return false
+	}
+
+	if p.Description() != other.Description() {
+		return false
+	}
+
+	if p.FavoritesCount() != other.FavoritesCount() {
+		return false
+	}
+
+	if p.FocalLength() != other.FocalLength() {
+		return false
+	}
+
+	if p.ForSale() != other.ForSale() {
+		return false
+	}
+
+	if p.Height() != other.Height() {
+		return false
+	}
+
+	if p.HighestRating() != other.HighestRating() {
+		return false
+	}
+
+	if p.HighestRatingDate() != other.HighestRatingDate() {
+		return false
+	}
+
+	if p.ID() != other.ID() {
+		return false
+	}
+
+	if p.ISO() != other.ISO() {
+		return false
+	}
+
+	if len(p.Images()) != len(other.Images()) {
+		return false
+	}
+
+	for i := range p.Images() {
+		if !p.Images()[i].Equals(other.Images()[i]) {
+			return false
+		}
+	}
+
+	if p.Latitude() != other.Latitude() {
+		return false
+	}
+
+	if p.Longitude() != other.Longitude() {
+		return false
+	}
+
+	if p.Lens() != other.Lens() {
+		return false
+	}
+
+	if p.LicenseType() != other.LicenseType() {
+		return false
+	}
+
+	if p.Location() != other.Location() {
+		return false
+	}
+
+	if p.NSFW() != other.NSFW() {
+		return false
+	}
+
+	if p.Name() != other.Name() {
+		return false
+	}
+
+	if p.PositiveVotesCount() != other.PositiveVotesCount() {
+		return false
+	}
+
+	if p.Rating() != other.Rating() {
+		return false
+	}
+
+	if p.SalesCount() != other.SalesCount() {
+		return false
+	}
+
+	if p.ShutterSpeed() != other.ShutterSpeed() {
+		return false
+	}
+
+	if p.Status() != other.Status() {
+		return false
+	}
+
+	if p.TakenAt() != other.TakenAt() {
+		return false
+	}
+
+	if p.TimesViewed() != other.TimesViewed() {
+		return false
+	}
+
+	if !p.User().Equals(other.User()) {
+		return false
+	}
+
+	if p.VotesCount() != other.VotesCount() {
+		return false
+	}
+
+	if p.Width() != other.Width() {
+		return false
+	}
+
+	return true
 }
