@@ -60,12 +60,12 @@ type PhotoImpl struct {
 	PhotoTimesViewed        int                 `json:"times_viewed"`
 	PhotoRating             float32             `json:"rating"`
 	PhotoStatus             int                 `json:"status"`
-	PhotoCreatedAt          time.Time           `json:"created_at"`
+	PhotoCreatedAt          *time.Time          `json:"created_at"`
 	PhotoCategory           category.Category   `json:"category"`
 	PhotoLocation           string              `json:"location"`
 	PhotoLatitude           float64             `json:"latitude"`
 	PhotoLongitude          float64             `json:"longitude"`
-	PhotoTakenAt            time.Time           `json:"taken_at"`
+	PhotoTakenAt            *time.Time          `json:"taken_at"`
 	PhotoForSale            bool                `json:"for_sale"`
 	PhotoWidth              int                 `json:"width"`
 	PhotoHeight             int                 `json:"height"`
@@ -76,7 +76,7 @@ type PhotoImpl struct {
 	PhotoNSFW               bool                `json:"nsfw"`
 	PhotoSalesCount         int                 `json:"sales_count"`
 	PhotoHighestRating      float32             `json:"highest_rating"`
-	PhotoHighestRatingDate  time.Time           `json:"highest_rating_date"`
+	PhotoHighestRatingDate  *time.Time          `json:"highest_rating_date"`
 	PhotoLicenseType        license.LicenseType `json:"license_type"`
 	PhotoImages             []*ImageImpl        `json:"images"`
 	PhotoCollectionsCount   int                 `json:"collections_count"`
