@@ -24,7 +24,9 @@ func NewApiManager(consumerKey string) *apiManagerImpl {
 func (a *apiManagerImpl) Do(apiRequest api.ApiRequest) (api.ApiResponse, error) {
 	request := apiRequest.Get()
 	queryParams := request.URL.Query()
-	queryParams.Add("consumer_key", a.consumerKey)
+	if apiRequest.AuthenticationRequired() {
+		queryParams.Add("consumer_key", a.consumerKey)
+	}
 	request.URL.RawQuery = queryParams.Encode()
 	response, err := a.client.Do(request)
 

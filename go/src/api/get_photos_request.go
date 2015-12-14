@@ -1,10 +1,6 @@
 package api
 
-import (
-	"net/http"
-	"net/url"
-	"reflect"
-)
+import "net/http"
 
 const (
 	getPhotosApi string = "https://api.500px.com/v1/photos"
@@ -15,6 +11,7 @@ type getPhotos struct {
 }
 
 type getPhotosBuilder struct {
+	*RequestBuilder
 	FeatureQuery       string `api_param:"feature"`
 	OnlyQuery          string `api_param:"only"`
 	ExcludeQuery       string `api_param:"exclude"`
@@ -25,7 +22,9 @@ type getPhotosBuilder struct {
 }
 
 func GetPhotosBuilder() *getPhotosBuilder {
-	return new(getPhotosBuilder)
+	return &getPhotosBuilder{
+		RequestBuilder: NewRequestBuilder(getPhotosApi),
+	}
 }
 
 func (builder *getPhotosBuilder) Feature(feature string) *getPhotosBuilder {
@@ -68,36 +67,15 @@ func (builder *getPhotosBuilder) Tags(enabled bool) *getPhotosBuilder {
 }
 
 func (builder *getPhotosBuilder) Build() (ApiRequest, error) {
-	apiParams := reflect.ValueOf(builder).Elem()
-	queryParams := url.Values{}
-
-	for i := 0; i < apiParams.NumField(); i++ {
-		if value, ok := apiParams.Field(i).Interface().(string); ok {
-			queryParams.Add(apiParams.Type().Field(i).Tag.Get("api_param"), value)
+	var err error
+	if req, err := builder.RequestBuilder.Build(builder, "GET"); err == nil {
+		getPhotosRequest := &getPhotos{
+			request: req,
 		}
-	}
-
-	url := getPhotosApi
-	if len(queryParams) > 0 {
-		url = url + queryParams.Encode()
-	}
-
-	req, err := http.NewRequest("GET", getPhotosApi, nil)
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Set("Accept", "application/json")
-
-	getPhotosRequest := &getPhotos{
-		request: req,
-	}
-
-	if _, ok := responseHandlerMap[reflect.TypeOf(getPhotosRequest)]; !ok {
 		registerResponseHandler(getPhotosRequest, GetPhotosResponse)
+		return getPhotosRequest, nil
 	}
-
-	return getPhotosRequest, nil
+	return nil, err
 }
 
 func (api *getPhotos) AuthenticationRequired() bool {
