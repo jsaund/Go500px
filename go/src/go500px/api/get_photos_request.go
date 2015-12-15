@@ -68,7 +68,7 @@ func (builder *getPhotosBuilder) Tags(enabled bool) *getPhotosBuilder {
 
 func (builder *getPhotosBuilder) Build() (ApiRequest, error) {
 	var err error
-	if req, err := builder.RequestBuilder.Build(builder, "GET"); err == nil {
+	if req, err := builder.RequestBuilder.build(builder, "GET"); err == nil {
 		getPhotosRequest := &getPhotos{
 			request: req,
 		}

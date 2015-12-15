@@ -7,7 +7,7 @@ import (
 )
 
 type ApiResponse struct {
-	Response interface{}
+	response interface{}
 }
 
 var responseHandlerMap map[reflect.Type]func(response *http.Response) (*ApiResponse, error)
@@ -19,7 +19,7 @@ func registerResponseHandler(request interface{}, response func(response *http.R
 	responseHandlerMap[reflect.TypeOf(request)] = response
 }
 
-func GetResponse(request interface{}, response *http.Response) (*ApiResponse, error) {
+func GetResponse(request ApiRequest, response *http.Response) (*ApiResponse, error) {
 	if f, ok := responseHandlerMap[reflect.TypeOf(request)]; ok {
 		return f(response)
 	}

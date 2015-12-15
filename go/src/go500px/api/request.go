@@ -19,7 +19,7 @@ func NewRequestBuilder(api string) *RequestBuilder {
 	return &RequestBuilder{api}
 }
 
-func (b *RequestBuilder) Build(v interface{}, method string) (*http.Request, error) {
+func (b *RequestBuilder) build(v interface{}, method string) (*http.Request, error) {
 	apiParams := reflect.ValueOf(v).Elem()
 	queryParams := url.Values{}
 
