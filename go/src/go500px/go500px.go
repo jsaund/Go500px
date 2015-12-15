@@ -1,7 +1,17 @@
 package go500px
 
-import "fmt"
+import "go500px/manager"
 
-func Start(tag string) string {
-	return fmt.Sprintf("Start: %s", tag)
+type Go500px struct {
+	apiManager manager.ApiManager
+}
+
+func NewGo500px(consumerKey string) *Go500px {
+	return &Go500px{
+		apiManager: manager.NewApiManager(consumerKey),
+	}
+}
+
+func (g *Go500px) GetApiManager() manager.ApiManager {
+	return g.apiManager
 }

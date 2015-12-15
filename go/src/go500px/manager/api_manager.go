@@ -6,7 +6,7 @@ import (
 )
 
 type ApiManager interface {
-	Do(apiRequest api.ApiRequest) (api.ApiResponse, error)
+	Do(apiRequest api.ApiRequest) (*api.ApiResponse, error)
 }
 
 type apiManagerImpl struct {
@@ -21,7 +21,7 @@ func NewApiManager(consumerKey string) *apiManagerImpl {
 	}
 }
 
-func (a *apiManagerImpl) Do(apiRequest api.ApiRequest) (api.ApiResponse, error) {
+func (a *apiManagerImpl) Do(apiRequest api.ApiRequest) (*api.ApiResponse, error) {
 	request := apiRequest.Get()
 	queryParams := request.URL.Query()
 	if apiRequest.AuthenticationRequired() {

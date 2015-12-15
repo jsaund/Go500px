@@ -1,10 +1,10 @@
 package manager
 
 import (
+	"go500px/api"
 	"go500px/model/photo"
 	"testing"
 )
-import "api"
 
 func TestSimpleRequest(t *testing.T) {
 	manager := NewApiManager("8C6ImXPi4dKEnOWC3YwPnKQO1QIYbqaystDCsijC")
@@ -29,7 +29,7 @@ func TestSimpleRequest(t *testing.T) {
 		t.Fatalf("Failed to execute getPhotosApiRequest. Reason: api response is nil")
 	}
 
-	if photos, ok := apiResponse.Get().([]*photo.PhotoImpl); !ok {
+	if photos, ok := apiResponse.Response.([]*photo.PhotoImpl); !ok {
 		t.Fatalf("Expected a slice of photos to be returned.")
 	} else {
 		t.Logf("Name: %s", photos[0].Name())

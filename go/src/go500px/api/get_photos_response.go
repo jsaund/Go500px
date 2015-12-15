@@ -10,7 +10,7 @@ type getPhotosResponse struct {
 	Photos []*photo.PhotoImpl `json:"photos"`
 }
 
-func GetPhotosResponse(response *http.Response) (ApiResponse, error) {
+func GetPhotosResponse(response *http.Response) (*ApiResponse, error) {
 	defer response.Body.Close()
 
 	r := &getPhotosResponse{}
@@ -18,9 +18,5 @@ func GetPhotosResponse(response *http.Response) (ApiResponse, error) {
 		return nil, err
 	}
 
-	return r, nil
-}
-
-func (r *getPhotosResponse) Get() interface{} {
-	return r.Photos
+	return &ApiResponse{r.Photos}, nil
 }
