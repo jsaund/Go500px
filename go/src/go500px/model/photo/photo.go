@@ -2,9 +2,9 @@ package photo
 
 import "time"
 
-import "model/category"
-import "model/user"
-import "model/license"
+import "go500px/model/category"
+import "go500px/model/user"
+import "go500px/model/license"
 
 // Photo represents a 500px photo. The photo consists of metadata and
 // details regarding retrieving and displaying the image associated with

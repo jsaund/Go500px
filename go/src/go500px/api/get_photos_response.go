@@ -2,7 +2,7 @@ package api
 
 import (
 	"encoding/json"
-	"model/photo"
+	"go500px/model/photo"
 	"net/http"
 )
 

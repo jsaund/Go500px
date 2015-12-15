@@ -1,7 +1,7 @@
 package manager
 
 import (
-	"api"
+	"go500px/api"
 	"net/http"
 )
 

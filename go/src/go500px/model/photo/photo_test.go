@@ -2,10 +2,10 @@ package photo
 
 import (
 	"encoding/json"
+	"go500px/model/category"
+	"go500px/model/license"
+	"go500px/model/user"
 	"io/ioutil"
-	"model/category"
-	"model/license"
-	"model/user"
 	"testing"
 	"time"
 )

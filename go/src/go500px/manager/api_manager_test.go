@@ -1,7 +1,7 @@
 package manager
 
 import (
-	"model/photo"
+	"go500px/model/photo"
 	"testing"
 )
 import "api"
