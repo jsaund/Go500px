@@ -26,6 +26,6 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotoViewHolder> {
 
   @Override
   public int getItemCount() {
-    return (int) mPhotos.Count();
+    return mPhotos.Count();
   }
 }

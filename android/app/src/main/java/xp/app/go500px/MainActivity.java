@@ -9,6 +9,7 @@ import go.go500px.Go500px;
 
 public class MainActivity extends AppCompatActivity {
   private static final String TAG = "MainActivity";
+  private static final String BASE_URL = "https://api.500px.com";
   private static final String CONSUMER_KEY = "8C6ImXPi4dKEnOWC3YwPnKQO1QIYbqaystDCsijC";
 
   @Override
@@ -20,8 +21,13 @@ public class MainActivity extends AppCompatActivity {
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
     try {
-      Go500px.Photos photos = Go500px.GetPhotos(CONSUMER_KEY);
-      final long numPhotos = photos.Count();
+      Go500px.GetPhotosBuilder getPhotosBuilder = Go500px.NewGetPhotosBuilder(BASE_URL);
+      getPhotosBuilder
+        .Feature("popular")
+        .ImageSize("20")
+        .Sort("highest_rating");
+      Go500px.Photos photos = Go500px.GetPhotos(getPhotosBuilder,CONSUMER_KEY);
+      final int numPhotos = photos.Count();
       Log.d(TAG, "Received " + numPhotos + " photos!");
 
       recyclerView.setAdapter(new PhotosAdapter(photos));
