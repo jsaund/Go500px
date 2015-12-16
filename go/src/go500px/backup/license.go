@@ -1,0 +1,11 @@
+package go500px
+
+const (
+	Standard int8 = iota
+	CreativeCommonsLicenseNonCommercialAttribution
+	CreativeCommonsLicenseNonCommercialNoDerivatives
+	CreativeCommonsLicenseNonCommercialShareAlike
+	CreativeCommonsLicenseAttribution
+	CreativeCommonsLicenseNoDerivatives
+	CreativeCommonsLicenseShareAlike
+)

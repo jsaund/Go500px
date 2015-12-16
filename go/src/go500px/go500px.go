@@ -1,17 +1,44 @@
 package go500px
 
-import "go500px/manager"
+import (
+	"encoding/json"
+	"net/http"
+	"net/url"
+)
 
-type Go500px struct {
-	apiManager manager.ApiManager
+type getPhotosResponse struct {
+	Photos []*photo `json:"photos"`
 }
 
-func NewGo500px(consumerKey string) *Go500px {
-	return &Go500px{
-		apiManager: manager.NewApiManager(consumerKey),
+func GetPhotos(consumerKey string) (*Photos, error) {
+	queryParams := url.Values{}
+	queryParams.Add("consumer_key", consumerKey)
+	queryParams.Add("feature", "fresh_today")
+	queryParams.Add("sort", "highest_rating")
+
+	api := "https://api.500px.com/v1/photos"
+	req, err := http.NewRequest("GET", api, nil)
+	if err != nil {
+		return nil, err
 	}
-}
+	req.Header.Set("Accept", "application/json")
+	req.URL.RawQuery = queryParams.Encode()
 
-func (g *Go500px) GetApiManager() manager.ApiManager {
-	return g.apiManager
+	client := &http.Client{}
+
+	response, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+
+	defer response.Body.Close()
+	photosResponse := &getPhotosResponse{}
+	if err = json.NewDecoder(response.Body).Decode(photosResponse); err != nil {
+		return nil, err
+	}
+
+	photos := NewPhotos()
+	photos.photos = photosResponse.Photos
+
+	return photos, nil
 }

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="/Users/jsaund/Workspace/Go500px/android/app/build/intermediates/exploded-aar/com.android.support/recyclerview-v7/22.2.0/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="5b37cf49773f7f17aca9830efd3053b0cac56728">
+        <dex dex="/Users/jsaund/Workspace/Go500px/android/app/build/intermediates/pre-dexed/debug/com.android.support-recyclerview-v7-22.2.0_38efcbb9d7ee37d0f127267a7a4534361d54a108.jar" />
+    </item>
+    <item
+        jar="/Users/jsaund/.gradle/caches/modules-2/files-2.1/com.google.code.gson/gson/2.3.1/ecb6e1f8e4b0e84c4b886c2f14a1500caf309757/gson-2.3.1.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="ecb6e1f8e4b0e84c4b886c2f14a1500caf309757">
+        <dex dex="/Users/jsaund/Workspace/Go500px/android/app/build/intermediates/pre-dexed/debug/gson-2.3.1_00177182074e77606f761d8ab0eeb7d750f2b030.jar" />
+    </item>
+    <item
+        jar="/Users/jsaund/Workspace/Go500px/android/app/build/intermediates/exploded-aar/com.android.support/support-v4/22.2.0/jars/libs/internal_impl-22.2.0.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="57f2ab85c164ff1676ec64dee787981c046fab79">
+        <dex dex="/Users/jsaund/Workspace/Go500px/android/app/build/intermediates/pre-dexed/debug/internal_impl-22.2.0_53e4ede7b61f0c0bd71a6ed6544470f179df0cb3.jar" />
+    </item>
+    <item
+        jar="/Users/jsaund/.gradle/caches/modules-2/files-2.1/com.squareup.retrofit/retrofit/1.9.0/a681c044244d9fc375198588297a39ba78028423/retrofit-1.9.0.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="a681c044244d9fc375198588297a39ba78028423">
+        <dex dex="/Users/jsaund/Workspace/Go500px/android/app/build/intermediates/pre-dexed/debug/retrofit-1.9.0_f66d1dfedeaca43c8b873480d56a32a94be85cf4.jar" />
+    </item>
+    <item
+        jar="/Users/jsaund/Workspace/Go500px/android/app/build/intermediates/exploded-aar/android/go500px/unspecified/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="ebd8157a5f3f49c1b920b5fb213d95e37e01d747">
+        <dex dex="/Users/jsaund/Workspace/Go500px/android/app/build/intermediates/pre-dexed/debug/android-go500px-unspecified_c2ca121edce5424b7c86803492e47f62faa60426.jar" />
+    </item>
+    <item
+        jar="/Users/jsaund/Workspace/Go500px/android/app/build/intermediates/incremental-runtime-classes/debug/instant-run.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="87e02f6f036d734f0ef139f538c5a89c40e94845">
+        <dex dex="/Users/jsaund/Workspace/Go500px/android/app/build/intermediates/pre-dexed/debug/instant-run_47d40cff468fefa4b153e0aa5b3f261a36350c2b.jar" />
+    </item>
+    <item
+        jar="/Users/jsaund/.gradle/caches/modules-2/files-2.1/com.github.bumptech.glide/glide/3.6.1/86b122e640af09b0723e1fa44083c354ba6d9089/glide-3.6.1.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="86b122e640af09b0723e1fa44083c354ba6d9089">
+        <dex dex="/Users/jsaund/Workspace/Go500px/android/app/build/intermediates/pre-dexed/debug/glide-3.6.1_f2359d9c9ea49b947c7311a445c8122de378f884.jar" />
+    </item>
+    <item
+        jar="/Users/jsaund/Workspace/Go500px/android/app/build/intermediates/incremental-classes/debug/classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="779e9335b5083fb4b7e358ac3d8885fcc15d2e0e">
+        <dex dex="/Users/jsaund/Workspace/Go500px/android/app/build/intermediates/pre-dexed/debug/classes_30523710f1ef4058563ab8bc9b7fccb1cf6db12e.jar" />
+    </item>
+    <item
+        jar="/Users/jsaund/Library/Android/sdk/extras/android/m2repository/com/android/support/support-annotations/22.2.0/support-annotations-22.2.0.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="66b42a1f3eb7676070b7ef7f14b603483aecbee1">
+        <dex dex="/Users/jsaund/Workspace/Go500px/android/app/build/intermediates/pre-dexed/debug/support-annotations-22.2.0_a2468b81ee09bfa6b0062f7008d96e54e811c0ce.jar" />
+    </item>
+    <item
+        jar="/Users/jsaund/Workspace/Go500px/android/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/22.2.0/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="73753982da6bde518f3a4c6b372749981d14d1a0">
+        <dex dex="/Users/jsaund/Workspace/Go500px/android/app/build/intermediates/pre-dexed/debug/com.android.support-appcompat-v7-22.2.0_7957fa78217ff58df57e8245c3ff1e5656acd874.jar" />
+    </item>
+    <item
+        jar="/Users/jsaund/Workspace/Go500px/android/app/build/intermediates/exploded-aar/com.android.support/support-v4/22.2.0/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="1ee588ff2c4daf7b97c1cbf922a6c7f027285c2f">
+        <dex dex="/Users/jsaund/Workspace/Go500px/android/app/build/intermediates/pre-dexed/debug/com.android.support-support-v4-22.2.0_66a33d56877afc85e9ce986aaeda947dc3b9fc17.jar" />
+    </item>
+
+</items>
