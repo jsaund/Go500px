@@ -2,6 +2,12 @@ package go500px
 
 import "net/http"
 
+type GetPhotosListener interface {
+	OnStart()
+	OnError(reason string)
+	OnSuccess(photos *Photos)
+}
+
 func GetPhotos(builder *GetPhotosBuilder, consumerKey string) (*Photos, error) {
 	request, err := builder.build()
 	if err != nil {
@@ -26,4 +32,16 @@ func GetPhotos(builder *GetPhotosBuilder, consumerKey string) (*Photos, error) {
 	}
 
 	return photosResponse.GetPhotos(), nil
+}
+
+func GetPhotosAsync(builder *GetPhotosBuilder, consumerKey string, callback GetPhotosListener) {
+	go func() {
+		callback.OnStart()
+		response, err := GetPhotos(builder, consumerKey)
+		if err != nil {
+			callback.OnError(err.Error())
+		} else {
+			callback.OnSuccess(response)
+		}
+	}()
 }
