@@ -8,17 +8,6 @@ import (
 
 const api string = "/v1/photos"
 
-/*type GetPhotosBuilder interface {
-	Feature(feature string) GetPhotosBuilder
-	Only(only string) GetPhotosBuilder
-	Exclude(exclude string) GetPhotosBuilder
-	Sort(sort string) GetPhotosBuilder
-	SortDirection(sortDirection string) GetPhotosBuilder
-	ImageSize(imageSize string) GetPhotosBuilder
-	Tags(enabled bool) GetPhotosBuilder
-	build() (*http.Request, error)
-}*/
-
 type GetPhotosBuilder struct {
 	apiUrl             string
 	FeatureQuery       string `api_param:"feature"`
