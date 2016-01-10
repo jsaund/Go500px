@@ -15,8 +15,6 @@ import (
 	"text/template"
 )
 
-// walkPackages scans the current directory for files which require code generation.
-// These go files are interfaces with annotations.
 func walkPackages(root string) (*requestInfo, error) {
 	fileset := token.NewFileSet()
 	pkgs, err := parser.ParseDir(fileset, root, nil, parser.ParseComments)
@@ -60,7 +58,7 @@ func walkPackages(root string) (*requestInfo, error) {
 
 // generateBuilder takes the scanned files that meet the generation requirements and outputs the generated
 // go file that implements the respective interface.
-func generateBuilder(r *requestInfo) {
+func genReqBuilderBuilder(r *requestInfo) {
 	r.Pkg = "go500px"
 
 	funcMap := template.FuncMap{
@@ -106,6 +104,45 @@ func (b *{{ .Name }}Impl) build() (*http.Request, error) {
 	}
 	req.Header.Set("Accept", "application/json")
 	return req, nil
+}
+
+func Run(b {{ .Name }}) ({{ .ResponseType }}, error) {
+	request, err := b.build()
+	if err != nil {
+		return nil, err
+	}
+	request.URL.RawQuery = request.URL.Query().Encode()
+
+	client := &http.Client{}
+
+	response, err := client.Do(request)
+	if err != nil {
+		return nil, err
+	}
+
+	defer response.Body.Close()
+	result, err := New{{ .ResponseType }}(response.Body)
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
+}
+
+func RunAsync(b {{ .Name }}, callback {{ .ResponseCallback }}) {
+	go func() {
+		if callback != nil {
+			callback.OnStart()
+		}
+		response, err := Run(b)
+
+		if callback != nil {
+			if err != nil {
+				callback.OnError(err.Error())
+			} else {
+				callback.OnSuccess(response)
+			}
+		}
+	}()
 }
 `))
 	var buf bytes.Buffer
@@ -157,6 +194,7 @@ func getParamsList(e ast.Expr) string {
 }
 
 const (
+	callback         string = "CALLBACK"
 	query            string = "QUERY"
 	body             string = "BODY"
 	httpMethodGet    string = "GET"
@@ -169,18 +207,21 @@ const (
 )
 
 type requestInfo struct {
-	Pkg         string
-	Name        string
-	Api         string
-	HttpMethod  string
-	QueryParams map[string]*ast.Field
+	Pkg              string
+	Name             string
+	Api              string
+	HttpMethod       string
+	QueryParams      map[string]*ast.Field
+	ResponseType     string
+	ResponseCallback string
 }
 
 type fileASTVisitor struct {
-	info     *types.Info
-	reqInfo  *requestInfo
-	re       *regexp.Regexp
-	generate bool
+	info          *types.Info
+	reqInfo       *requestInfo
+	re            *regexp.Regexp
+	genReqBuilder bool
+	genCallback   bool
 }
 
 func newFileASTVisitor(info *types.Info) *fileASTVisitor {
@@ -189,8 +230,8 @@ func newFileASTVisitor(info *types.Info) *fileASTVisitor {
 		reqInfo: &requestInfo{
 			QueryParams: make(map[string]*ast.Field),
 		},
-		re:       regexp.MustCompile(pattern),
-		generate: false,
+		re:            regexp.MustCompile(pattern),
+		genReqBuilder: false,
 	}
 }
 
@@ -201,7 +242,7 @@ func (v *fileASTVisitor) Visit(node ast.Node) ast.Visitor {
 
 	switch node.(type) {
 	case *ast.File:
-		v.generate = false
+		v.genReqBuilder = false
 		break
 	case *ast.TypeSpec:
 		// Check if we are at the beginning of a request builder declaration
@@ -209,17 +250,28 @@ func (v *fileASTVisitor) Visit(node ast.Node) ast.Visitor {
 		typeSpec := node.(*ast.TypeSpec)
 		switch typeSpec.Type.(type) {
 		case *ast.InterfaceType:
-			v.reqInfo.Name = typeSpec.Name.Name
+			if v.genReqBuilder {
+				v.reqInfo.Name = typeSpec.Name.Name
+			} else if v.genCallback {
+				v.reqInfo.ResponseCallback = typeSpec.Name.Name
+				v.genCallback = false
+			}
 			break
 		}
 		break
 	case *ast.InterfaceType:
+		if !v.genReqBuilder {
+			break
+		}
 		// Retain a mapping of interface methods to their fields which contain
 		// the query parameter and argument name and type information to implement
 		// the interface
 		ifc := node.(*ast.InterfaceType)
 		methods := ifc.Methods
 		for _, f := range methods.List {
+			if !ast.IsExported(f.Names[0].Name) {
+				continue
+			}
 			if qp := extractQueryParam(v.re, f.Doc.List[0].Text); qp != "" {
 				v.reqInfo.QueryParams[f.Names[0].Name] = f
 			}
@@ -229,14 +281,27 @@ func (v *fileASTVisitor) Visit(node ast.Node) ast.Visitor {
 		// Extract the HTTP Method and API from the Interface declaration
 		comment := node.(*ast.Comment)
 		if httpMethod, api := extractHttpMethod(v.re, comment.Text); httpMethod != "" {
-			v.generate = true
+			v.genReqBuilder = true
+			v.genCallback = false
 			v.reqInfo.HttpMethod = httpMethod
 			v.reqInfo.Api = api
+		} else if responseType := extractResponseType(v.re, comment.Text); responseType != "" {
+			v.genReqBuilder = false
+			v.genCallback = true
+			v.reqInfo.ResponseType = responseType
 		}
 		break
 	}
 
 	return v
+}
+
+func extractResponseType(re *regexp.Regexp, s string) string {
+	match := re.FindStringSubmatch(s)
+	if len(match) == 3 && isAnnotationCallback(match[1]) {
+		return match[2]
+	}
+	return ""
 }
 
 func extractHttpMethod(re *regexp.Regexp, s string) (string, string) {
@@ -245,6 +310,10 @@ func extractHttpMethod(re *regexp.Regexp, s string) (string, string) {
 		return match[1], match[2]
 	}
 	return "", ""
+}
+
+func isAnnotationCallback(s string) bool {
+	return s == callback
 }
 
 func isAnnotationHttpMethod(s string) bool {
