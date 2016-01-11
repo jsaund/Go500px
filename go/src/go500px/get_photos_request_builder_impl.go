@@ -17,11 +17,20 @@ type GetPhotosCallback interface {
 }
 
 type GetPhotosRequestBuilderImpl struct {
+	baseUrl     string
 	queryParams url.Values
 }
 
-func NewGetPhotosRequestBuilder(url string) GetPhotosRequestBuilder {
-	return &GetPhotosRequestBuilderImpl{}
+func NewGetPhotosRequestBuilder(baseUrl string) GetPhotosRequestBuilder {
+	return &GetPhotosRequestBuilderImpl{
+		baseUrl:     baseUrl,
+		queryParams: url.Values{},
+	}
+}
+
+func (b *GetPhotosRequestBuilderImpl) ConsumerKey(consumerKey string) GetPhotosRequestBuilder {
+	b.queryParams.Add("consumer_key", string(consumerKey))
+	return b
 }
 
 func (b *GetPhotosRequestBuilderImpl) Exclude(exclude string) GetPhotosRequestBuilder {
@@ -60,7 +69,7 @@ func (b *GetPhotosRequestBuilderImpl) Tags(tags int8) GetPhotosRequestBuilder {
 }
 
 func (b *GetPhotosRequestBuilderImpl) build() (*http.Request, error) {
-	req, err := http.NewRequest("GET", "/v1/photos", nil)
+	req, err := http.NewRequest("GET", b.baseUrl+"/v1/photos", nil)
 	if err != nil {
 		return nil, err
 	}

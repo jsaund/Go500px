@@ -25,6 +25,9 @@ type GetPhotosRequestBuilder interface {
 	// @QUERY("tags")
 	Tags(tags int8) GetPhotosRequestBuilder
 
+	// @QUERY("consumer_key")
+	ConsumerKey(consumerKey string) GetPhotosRequestBuilder
+
 	// @SYNC("GetPhotosResponse")
 	Run() (GetPhotosResponse, error)
 
