@@ -1,5 +1,7 @@
 package go500px
 
+//go:generate $GOPATH/src/github.com/jsaund/gorest/gorest -input get_photos_request_builder.go -output get_photos_request_builder_impl.go -pkg go500px
+
 // @GET("/v1/photos")
 type GetPhotosRequestBuilder interface {
 	// @QUERY("feature")
@@ -22,11 +24,10 @@ type GetPhotosRequestBuilder interface {
 
 	// @QUERY("tags")
 	Tags(tags int8) GetPhotosRequestBuilder
-}
 
-// @CALLBACK("GetPhotoResponse")
-type GetPhotosCallback interface {
-	OnStart()
-	OnError(reason string)
-	OnSuccess(response GetPhotoResponse)
+	// @SYNC("GetPhotosResponse")
+	Run() (GetPhotosResponse, error)
+
+	// @ASYNC("GetPhotosCallback")
+	RunAsync(callback GetPhotosCallback)
 }

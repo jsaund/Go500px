@@ -5,7 +5,7 @@ import (
 	"io"
 )
 
-type GetPhotoResponse interface {
+type GetPhotosResponse interface {
 	GetPhotos() *Photos
 }
 
