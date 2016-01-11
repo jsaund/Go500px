@@ -12,12 +12,7 @@ public class MainActivity extends AppCompatActivity {
   private static final String BASE_URL = "https://api.500px.com";
   private static final String CONSUMER_KEY = "8C6ImXPi4dKEnOWC3YwPnKQO1QIYbqaystDCsijC";
 
-  private class GetPhotosListener extends Go500px.GetPhotosListener.Stub {
-
-    @Override
-    public void OnStart() {
-      Log.d(TAG, "Start loading photos");
-    }
+  private class GetPhotosListener extends Go500px.GetPhotosCallback.Stub {
 
     @Override
     public void OnError(String s) {
@@ -25,7 +20,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void OnSuccess(final Go500px.Photos photos) {
+    public void OnStart() {
+      Log.d(TAG, "Start loading photos");
+    }
+
+    @Override
+    public void OnSuccess(Go500px.GetPhotosResponse getPhotosResponse) {
+      final Go500px.Photos photos = getPhotosResponse.GetPhotos();
       final int numPhotos = photos.Count();
       Log.d(TAG, "Received " + numPhotos + " photos!");
 
@@ -47,8 +48,9 @@ public class MainActivity extends AppCompatActivity {
     mRecyclerView = (RecyclerView) findViewById(R.id.list);
     mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-    Go500px.GetPhotosBuilder getPhotosBuilder = Go500px.NewGetPhotosBuilder(BASE_URL);
+    Go500px.GetPhotosRequestBuilder getPhotosBuilder = Go500px.NewGetPhotosRequestBuilder(BASE_URL);
     getPhotosBuilder
+      .ConsumerKey(CONSUMER_KEY)
       .Feature("popular")
       .ImageSize("20")
       .Sort("highest_rating");
