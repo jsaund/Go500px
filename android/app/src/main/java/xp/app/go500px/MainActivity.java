@@ -54,6 +54,6 @@ public class MainActivity extends AppCompatActivity {
       .Feature("popular")
       .ImageSize("20")
       .Sort("highest_rating");
-    Go500px.GetPhotosAsync(getPhotosBuilder, CONSUMER_KEY, mGetPhotosListener);
+    Go500px.GetPhotosAsync(getPhotosBuilder, mGetPhotosListener);
   }
 }
