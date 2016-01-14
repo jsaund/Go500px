@@ -87,9 +87,7 @@ func (b *GetPhotosRequestBuilderImpl) Run() (GetPhotosResponse, error) {
 	}
 	request.URL.RawQuery = request.URL.Query().Encode()
 
-	client := &http.Client{}
-
-	response, err := client.Do(request)
+	response, err := getClient().Do(request)
 	if err != nil {
 		return nil, err
 	}
@@ -103,7 +101,7 @@ func (b *GetPhotosRequestBuilderImpl) Run() (GetPhotosResponse, error) {
 }
 
 func (b *GetPhotosRequestBuilderImpl) RunAsync(callback GetPhotosCallback) {
-	go func() {
+	go func(b *GetPhotosRequestBuilderImpl) {
 		if callback != nil {
 			callback.OnStart()
 		}
@@ -116,5 +114,5 @@ func (b *GetPhotosRequestBuilderImpl) RunAsync(callback GetPhotosCallback) {
 				callback.OnSuccess(response)
 			}
 		}
-	}()
+	}(b)
 }
