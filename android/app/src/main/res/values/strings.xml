@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Go500px</string>
+
+    <string name="hint_email">email or username</string>
+    <string name="hint_password">password</string>
+    <string name="login">Login</string>
+    <string name="authenticating">Authenticating…</string>
 </resources>

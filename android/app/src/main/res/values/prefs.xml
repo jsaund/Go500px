@@ -1,3 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="prefs_login">xp.app.go500px.prefs.login</string>
+
+    <string name="key_token">xp.app.go500px.prefs.key.token</string>
+    <string name="key_secret">xp.app.go500px.prefs.key.secret</string>
 </resources>

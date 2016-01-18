@@ -1,7 +1,11 @@
 package xp.app.go500px;
 
-/**
- * Created by jsaund on 1/18/16.
- */
-public class FiveHundredPxCredentials {
+public final class FiveHundredPxCredentials {
+  public final String token;
+  public final String secret;
+
+  public FiveHundredPxCredentials(String token, String secret) {
+    this.token = token;
+    this.secret = secret;
+  }
 }
