@@ -7,10 +7,8 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import go.go500px.Go500px;
 
-public class MainActivity extends AppCompatActivity {
-  private static final String TAG = "MainActivity";
-  private static final String BASE_URL = "https://api.500px.com";
-  private static final String CONSUMER_KEY = "8C6ImXPi4dKEnOWC3YwPnKQO1QIYbqaystDCsijC";
+public class PhotosActivity extends AppCompatActivity {
+  private static final String TAG = "PhotosActivity";
 
   private class GetPhotosListener extends Go500px.GetPhotosCallback.Stub {
 
@@ -43,14 +41,13 @@ public class MainActivity extends AppCompatActivity {
 
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_main);
+    setContentView(R.layout.activity_photos);
 
     mRecyclerView = (RecyclerView) findViewById(R.id.list);
     mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-    Go500px.GetPhotosRequestBuilder getPhotosBuilder = Go500px.NewGetPhotosRequestBuilder(BASE_URL);
+    final Go500px.GetPhotosRequestBuilder getPhotosBuilder = Go500px.NewGetPhotosRequestBuilder(Config.BASE_URL);
     getPhotosBuilder
-      .ConsumerKey(CONSUMER_KEY)
       .Feature("popular")
       .ImageSize("20")
       .Sort("highest_rating");

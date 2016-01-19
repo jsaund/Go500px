@@ -44,7 +44,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     findViewById(R.id.login_container).setVisibility(View.VISIBLE);
-    
+
     mHandler = new LoginHanlder(this);
 
     mUsername = (EditText) findViewById(R.id.email);
@@ -61,7 +61,7 @@ public class LoginActivity extends AppCompatActivity {
   }
 
   private void launchPhotoBrowser() {
-    final Intent launchMainActivity = new Intent(this, MainActivity.class);
+    final Intent launchMainActivity = new Intent(this, PhotosActivity.class);
     startActivity(launchMainActivity);
     finish();
   }

@@ -34,4 +34,19 @@
         <item name="android:textSize">14sp</item>
         <item name="android:textColor">@color/oil</item>
     </style>
+    <style name="photoDetailsType">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/slate</item>
+    </style>
+    <style name="photoDetails">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/jet</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
 </resources>

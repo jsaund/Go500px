@@ -2,7 +2,7 @@ package go500px
 
 //go:generate $GOPATH/src/github.com/jsaund/gorest/gorest -input get_photos_request_builder.go -output get_photos_request_builder_impl.go -pkg go500px
 
-// @GET("/v1/photos")
+// @GET("/photos")
 type GetPhotosRequestBuilder interface {
 	// @QUERY("feature")
 	Feature(feature string) GetPhotosRequestBuilder

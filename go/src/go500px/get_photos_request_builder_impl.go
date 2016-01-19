@@ -1,5 +1,5 @@
 /*
-* CODE GENERATED AUTOMATICALLY WITH Go500px
+* CODE GENERATED AUTOMATICALLY WITH GOREST (github.com/jsaund/gorest)
 * THIS FILE SHOULD NOT BE EDITED BY HAND
  */
 
@@ -8,6 +8,7 @@ package go500px
 import (
 	"net/http"
 	"net/url"
+	"strings"
 )
 
 type GetPhotosCallback interface {
@@ -17,14 +18,16 @@ type GetPhotosCallback interface {
 }
 
 type GetPhotosRequestBuilderImpl struct {
-	baseUrl     string
-	queryParams url.Values
+	baseUrl           string
+	pathSubstitutions map[string]string
+	queryParams       url.Values
 }
 
 func NewGetPhotosRequestBuilder(baseUrl string) GetPhotosRequestBuilder {
 	return &GetPhotosRequestBuilderImpl{
-		baseUrl:     baseUrl,
-		queryParams: url.Values{},
+		baseUrl:           baseUrl,
+		pathSubstitutions: make(map[string]string),
+		queryParams:       url.Values{},
 	}
 }
 
@@ -68,8 +71,20 @@ func (b *GetPhotosRequestBuilderImpl) Tags(tags int8) GetPhotosRequestBuilder {
 	return b
 }
 
+func (b *GetPhotosRequestBuilderImpl) applyPathSubstituions(api string) string {
+	if len(b.pathSubstitutions) == 0 {
+		return api
+	}
+
+	for key, value := range b.pathSubstitutions {
+		api = strings.Replace(api, "{"+key+"}", value, -1)
+	}
+
+	return api
+}
+
 func (b *GetPhotosRequestBuilderImpl) build() (*http.Request, error) {
-	req, err := http.NewRequest("GET", b.baseUrl+"/v1/photos", nil)
+	req, err := http.NewRequest("GET", b.baseUrl+b.applyPathSubstituions("/photos"), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -101,10 +116,11 @@ func (b *GetPhotosRequestBuilderImpl) Run() (GetPhotosResponse, error) {
 }
 
 func (b *GetPhotosRequestBuilderImpl) RunAsync(callback GetPhotosCallback) {
+	if callback != nil {
+		callback.OnStart()
+	}
+
 	go func(b *GetPhotosRequestBuilderImpl) {
-		if callback != nil {
-			callback.OnStart()
-		}
 		response, err := b.Run()
 
 		if callback != nil {

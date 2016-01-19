@@ -5,7 +5,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:fitsSystemWindows="true"
-    tools:context="xp.app.go500px.MainActivity">
+    tools:context=".PhotosActivity">
 
     <LinearLayout
         android:id="@+id/login_container"

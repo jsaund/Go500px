@@ -5,4 +5,7 @@
     <string name="hint_password">password</string>
     <string name="login">Login</string>
     <string name="authenticating">Authenticating…</string>
+    <string name="title_activity_photo_details">PhotoDetailsActivity</string>
+    <string name="camera">Camera</string>
+    <string name="category">Category</string>
 </resources>

@@ -57,3 +57,11 @@ func GetPhotos(builder GetPhotosRequestBuilder) (*Photos, error) {
 func GetPhotosAsync(builder GetPhotosRequestBuilder, callback GetPhotosCallback) {
 	builder.RunAsync(callback)
 }
+
+func GetPhoto(builder GetPhotoRequestBuilder) (GetPhotoResponse, error) {
+	return builder.Run()
+}
+
+func GetPhotoAsync(builder GetPhotoRequestBuilder, callback GetPhotoCallback) {
+	builder.RunAsync(callback)
+}
