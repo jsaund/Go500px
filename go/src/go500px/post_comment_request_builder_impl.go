@@ -11,21 +11,21 @@ import (
 	"strings"
 )
 
-type GetPhotoCallback interface {
+type PostCommentCallback interface {
 	OnStart()
 	OnError(reason string)
-	OnSuccess(response GetPhotoResponse)
+	OnSuccess(response PostCommentResponse)
 }
 
-type GetPhotoRequestBuilderImpl struct {
+type PostCommentRequestBuilderImpl struct {
 	baseUrl           string
 	pathSubstitutions map[string]string
 	queryParams       url.Values
 	postFormParams    url.Values
 }
 
-func NewGetPhotoRequestBuilder(baseUrl string) GetPhotoRequestBuilder {
-	return &GetPhotoRequestBuilderImpl{
+func NewPostCommentRequestBuilder(baseUrl string) PostCommentRequestBuilder {
+	return &PostCommentRequestBuilderImpl{
 		baseUrl:           baseUrl,
 		pathSubstitutions: make(map[string]string),
 		queryParams:       url.Values{},
@@ -33,32 +33,17 @@ func NewGetPhotoRequestBuilder(baseUrl string) GetPhotoRequestBuilder {
 	}
 }
 
-func (b *GetPhotoRequestBuilderImpl) PhotoID(id string) GetPhotoRequestBuilder {
+func (b *PostCommentRequestBuilderImpl) PhotoID(id string) PostCommentRequestBuilder {
 	b.pathSubstitutions["id"] = string(id)
 	return b
 }
 
-func (b *GetPhotoRequestBuilderImpl) Comments(include int8) GetPhotoRequestBuilder {
-	b.queryParams.Add("comments", string(include))
+func (b *PostCommentRequestBuilderImpl) Body(body string) PostCommentRequestBuilder {
+	b.postFormParams.Add("body", string(body))
 	return b
 }
 
-func (b *GetPhotoRequestBuilderImpl) CommentsPage(page int) GetPhotoRequestBuilder {
-	b.queryParams.Add("comments_page", string(page))
-	return b
-}
-
-func (b *GetPhotoRequestBuilderImpl) ImageSize(size int) GetPhotoRequestBuilder {
-	b.queryParams.Add("image_size", string(size))
-	return b
-}
-
-func (b *GetPhotoRequestBuilderImpl) Tags(tags int8) GetPhotoRequestBuilder {
-	b.queryParams.Add("tags", string(tags))
-	return b
-}
-
-func (b *GetPhotoRequestBuilderImpl) applyPathSubstituions(api string) string {
+func (b *PostCommentRequestBuilderImpl) applyPathSubstituions(api string) string {
 	if len(b.pathSubstitutions) == 0 {
 		return api
 	}
@@ -70,8 +55,8 @@ func (b *GetPhotoRequestBuilderImpl) applyPathSubstituions(api string) string {
 	return api
 }
 
-func (b *GetPhotoRequestBuilderImpl) build() (*http.Request, error) {
-	req, err := http.NewRequest("GET", b.baseUrl+b.applyPathSubstituions("/photos/{id}"), nil)
+func (b *PostCommentRequestBuilderImpl) build() (*http.Request, error) {
+	req, err := http.NewRequest("POST", b.baseUrl+b.applyPathSubstituions("/photos/{id}/comment"), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -85,7 +70,7 @@ func (b *GetPhotoRequestBuilderImpl) build() (*http.Request, error) {
 	return req, nil
 }
 
-func (b *GetPhotoRequestBuilderImpl) Run() (GetPhotoResponse, error) {
+func (b *PostCommentRequestBuilderImpl) Run() (PostCommentResponse, error) {
 	request, err := b.build()
 	if err != nil {
 		return nil, err
@@ -98,19 +83,19 @@ func (b *GetPhotoRequestBuilderImpl) Run() (GetPhotoResponse, error) {
 	}
 
 	defer response.Body.Close()
-	result, err := NewGetPhotoResponse(response.Body)
+	result, err := NewPostCommentResponse(response.Body)
 	if err != nil {
 		return nil, err
 	}
 	return result, nil
 }
 
-func (b *GetPhotoRequestBuilderImpl) RunAsync(callback GetPhotoCallback) {
+func (b *PostCommentRequestBuilderImpl) RunAsync(callback PostCommentCallback) {
 	if callback != nil {
 		callback.OnStart()
 	}
 
-	go func(b *GetPhotoRequestBuilderImpl) {
+	go func(b *PostCommentRequestBuilderImpl) {
 		response, err := b.Run()
 
 		if callback != nil {

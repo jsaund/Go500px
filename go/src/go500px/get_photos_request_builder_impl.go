@@ -21,6 +21,7 @@ type GetPhotosRequestBuilderImpl struct {
 	baseUrl           string
 	pathSubstitutions map[string]string
 	queryParams       url.Values
+	postFormParams    url.Values
 }
 
 func NewGetPhotosRequestBuilder(baseUrl string) GetPhotosRequestBuilder {
@@ -28,6 +29,7 @@ func NewGetPhotosRequestBuilder(baseUrl string) GetPhotosRequestBuilder {
 		baseUrl:           baseUrl,
 		pathSubstitutions: make(map[string]string),
 		queryParams:       url.Values{},
+		postFormParams:    url.Values{},
 	}
 }
 
@@ -90,6 +92,9 @@ func (b *GetPhotosRequestBuilderImpl) build() (*http.Request, error) {
 	}
 	if len(b.queryParams) > 0 {
 		req.URL.RawQuery = b.queryParams.Encode()
+	}
+	if len(b.postFormParams) > 0 {
+		req.URL.RawQuery = b.postFormParams.Encode()
 	}
 	req.Header.Set("Accept", "application/json")
 	return req, nil
