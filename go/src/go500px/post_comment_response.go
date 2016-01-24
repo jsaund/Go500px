@@ -3,6 +3,7 @@ package go500px
 import (
 	"encoding/json"
 	"io"
+	"strconv"
 )
 
 type PostCommentResponse interface {
@@ -12,7 +13,7 @@ type PostCommentResponse interface {
 }
 
 type postCommentResponse struct {
-	CommentStatus  string `json:"status"`
+	CommentStatus  int    `json:"status"`
 	CommentMessage string `json:"message"`
 	CommentError   string `json:"error"`
 }
@@ -26,7 +27,7 @@ func NewPostCommentResponse(input io.ReadCloser) (*postCommentResponse, error) {
 }
 
 func (r *postCommentResponse) GetStatus() string {
-	return r.CommentStatus
+	return strconv.Itoa(r.CommentStatus)
 }
 
 func (r *postCommentResponse) GetMessage() string {
