@@ -8,4 +8,6 @@
     <string name="title_activity_photo_details">PhotoDetailsActivity</string>
     <string name="camera">Camera</string>
     <string name="category">Category</string>
+    <string name="hint_comment">Leave a comment</string>
+    <string name="comment">Comment</string>
 </resources>

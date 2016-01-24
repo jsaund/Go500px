@@ -29,6 +29,32 @@
             android:useDefaultMargins="true"
             android:columnOrderPreserved="false">
 
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_columnSpan="2"
+                android:layout_margin="16dp">
+
+                <EditText
+                    android:id="@+id/comment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/hint_comment"
+                    android:inputType="textShortMessage"/>
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/add_comment"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="24dp"
+                android:layout_gravity="center_horizontal"
+                android:padding="18dp"
+                android:layout_columnSpan="2"
+                android:text="@string/comment"/>
+
             <TextView
                 android:id="@+id/photo_title"
                 android:layout_width="match_parent"
