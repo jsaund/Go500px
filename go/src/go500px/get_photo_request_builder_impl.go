@@ -8,10 +8,13 @@ package go500px
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"mime/multipart"
 	"net/http"
 	"net/url"
 	"strings"
+
+	"github.com/jsaund/gorest/restclient"
 )
 
 type GetPhotoCallback interface {
@@ -21,7 +24,6 @@ type GetPhotoCallback interface {
 }
 
 type GetPhotoRequestBuilderImpl struct {
-	baseUrl            string
 	pathSubstitutions  map[string]string
 	queryParams        url.Values
 	postFormParams     url.Values
@@ -30,9 +32,8 @@ type GetPhotoRequestBuilderImpl struct {
 	headerParams       map[string]string
 }
 
-func NewGetPhotoRequestBuilder(baseUrl string) GetPhotoRequestBuilder {
+func NewGetPhotoRequestBuilder() GetPhotoRequestBuilder {
 	return &GetPhotoRequestBuilderImpl{
-		baseUrl:            baseUrl,
 		pathSubstitutions:  make(map[string]string),
 		queryParams:        url.Values{},
 		postFormParams:     url.Values{},
@@ -42,27 +43,27 @@ func NewGetPhotoRequestBuilder(baseUrl string) GetPhotoRequestBuilder {
 }
 
 func (b *GetPhotoRequestBuilderImpl) PhotoID(id string) GetPhotoRequestBuilder {
-	b.pathSubstitutions["id"] = string(id)
+	b.pathSubstitutions["id"] = fmt.Sprintf("%v", id)
 	return b
 }
 
 func (b *GetPhotoRequestBuilderImpl) Comments(include int8) GetPhotoRequestBuilder {
-	b.queryParams.Add("comments", string(include))
+	b.queryParams.Add("comments", fmt.Sprintf("%v", include))
 	return b
 }
 
 func (b *GetPhotoRequestBuilderImpl) CommentsPage(page int) GetPhotoRequestBuilder {
-	b.queryParams.Add("comments_page", string(page))
+	b.queryParams.Add("comments_page", fmt.Sprintf("%v", page))
 	return b
 }
 
 func (b *GetPhotoRequestBuilderImpl) ImageSize(size int) GetPhotoRequestBuilder {
-	b.queryParams.Add("image_size", string(size))
+	b.queryParams.Add("image_size", fmt.Sprintf("%v", size))
 	return b
 }
 
 func (b *GetPhotoRequestBuilderImpl) Tags(tags int8) GetPhotoRequestBuilder {
-	b.queryParams.Add("tags", string(tags))
+	b.queryParams.Add("tags", fmt.Sprintf("%v", tags))
 	return b
 }
 
@@ -79,7 +80,11 @@ func (b *GetPhotoRequestBuilderImpl) applyPathSubstituions(api string) string {
 }
 
 func (b *GetPhotoRequestBuilderImpl) build() (req *http.Request, err error) {
-	url := b.baseUrl + b.applyPathSubstituions("/photos/{id}")
+	restClient := restclient.GetClient()
+	if restClient == nil {
+		return nil, fmt.Errorf("A rest client has not been registered yet. You must call client.RegisterClient first")
+	}
+	url := restClient.BaseURL() + b.applyPathSubstituions("/photos/{id}")
 	httpMethod := "GET"
 	switch httpMethod {
 	case "POST", "PUT":
@@ -141,12 +146,25 @@ func (b *GetPhotoRequestBuilderImpl) Run() (GetPhotoResponse, error) {
 	}
 	request.URL.RawQuery = request.URL.Query().Encode()
 
-	response, err := getClient().Do(request)
+	restClient := restclient.GetClient()
+	if restClient == nil {
+		return nil, fmt.Errorf("A rest client has not been registered yet. You must call client.RegisterClient first")
+	}
+
+	if restClient.Debug() {
+		restclient.DebugRequest(request)
+	}
+
+	response, err := restClient.HttpClient().Do(request)
 	if err != nil {
 		return nil, err
 	}
 
 	defer response.Body.Close()
+	if restClient.Debug() {
+		restclient.DebugResponse(response)
+	}
+
 	result, err := NewGetPhotoResponse(response.Body)
 	if err != nil {
 		return nil, err

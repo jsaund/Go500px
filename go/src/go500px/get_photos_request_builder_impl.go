@@ -8,10 +8,13 @@ package go500px
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"mime/multipart"
 	"net/http"
 	"net/url"
 	"strings"
+
+	"github.com/jsaund/gorest/restclient"
 )
 
 type GetPhotosCallback interface {
@@ -21,7 +24,6 @@ type GetPhotosCallback interface {
 }
 
 type GetPhotosRequestBuilderImpl struct {
-	baseUrl            string
 	pathSubstitutions  map[string]string
 	queryParams        url.Values
 	postFormParams     url.Values
@@ -30,9 +32,8 @@ type GetPhotosRequestBuilderImpl struct {
 	headerParams       map[string]string
 }
 
-func NewGetPhotosRequestBuilder(baseUrl string) GetPhotosRequestBuilder {
+func NewGetPhotosRequestBuilder() GetPhotosRequestBuilder {
 	return &GetPhotosRequestBuilderImpl{
-		baseUrl:            baseUrl,
 		pathSubstitutions:  make(map[string]string),
 		queryParams:        url.Values{},
 		postFormParams:     url.Values{},
@@ -42,42 +43,42 @@ func NewGetPhotosRequestBuilder(baseUrl string) GetPhotosRequestBuilder {
 }
 
 func (b *GetPhotosRequestBuilderImpl) ConsumerKey(consumerKey string) GetPhotosRequestBuilder {
-	b.queryParams.Add("consumer_key", string(consumerKey))
+	b.queryParams.Add("consumer_key", fmt.Sprintf("%v", consumerKey))
 	return b
 }
 
 func (b *GetPhotosRequestBuilderImpl) Exclude(exclude string) GetPhotosRequestBuilder {
-	b.queryParams.Add("exclude", string(exclude))
+	b.queryParams.Add("exclude", fmt.Sprintf("%v", exclude))
 	return b
 }
 
 func (b *GetPhotosRequestBuilderImpl) Feature(feature string) GetPhotosRequestBuilder {
-	b.queryParams.Add("feature", string(feature))
+	b.queryParams.Add("feature", fmt.Sprintf("%v", feature))
 	return b
 }
 
 func (b *GetPhotosRequestBuilderImpl) ImageSize(size string) GetPhotosRequestBuilder {
-	b.queryParams.Add("image_size", string(size))
+	b.queryParams.Add("image_size", fmt.Sprintf("%v", size))
 	return b
 }
 
 func (b *GetPhotosRequestBuilderImpl) Only(only string) GetPhotosRequestBuilder {
-	b.queryParams.Add("only", string(only))
+	b.queryParams.Add("only", fmt.Sprintf("%v", only))
 	return b
 }
 
 func (b *GetPhotosRequestBuilderImpl) Sort(sort string) GetPhotosRequestBuilder {
-	b.queryParams.Add("sort", string(sort))
+	b.queryParams.Add("sort", fmt.Sprintf("%v", sort))
 	return b
 }
 
 func (b *GetPhotosRequestBuilderImpl) SortDirection(direction string) GetPhotosRequestBuilder {
-	b.queryParams.Add("sort_direction", string(direction))
+	b.queryParams.Add("sort_direction", fmt.Sprintf("%v", direction))
 	return b
 }
 
 func (b *GetPhotosRequestBuilderImpl) Tags(tags int8) GetPhotosRequestBuilder {
-	b.queryParams.Add("tags", string(tags))
+	b.queryParams.Add("tags", fmt.Sprintf("%v", tags))
 	return b
 }
 
@@ -94,7 +95,11 @@ func (b *GetPhotosRequestBuilderImpl) applyPathSubstituions(api string) string {
 }
 
 func (b *GetPhotosRequestBuilderImpl) build() (req *http.Request, err error) {
-	url := b.baseUrl + b.applyPathSubstituions("/photos")
+	restClient := restclient.GetClient()
+	if restClient == nil {
+		return nil, fmt.Errorf("A rest client has not been registered yet. You must call client.RegisterClient first")
+	}
+	url := restClient.BaseURL() + b.applyPathSubstituions("/photos")
 	httpMethod := "GET"
 	switch httpMethod {
 	case "POST", "PUT":
@@ -156,12 +161,25 @@ func (b *GetPhotosRequestBuilderImpl) Run() (GetPhotosResponse, error) {
 	}
 	request.URL.RawQuery = request.URL.Query().Encode()
 
-	response, err := getClient().Do(request)
+	restClient := restclient.GetClient()
+	if restClient == nil {
+		return nil, fmt.Errorf("A rest client has not been registered yet. You must call client.RegisterClient first")
+	}
+
+	if restClient.Debug() {
+		restclient.DebugRequest(request)
+	}
+
+	response, err := restClient.HttpClient().Do(request)
 	if err != nil {
 		return nil, err
 	}
 
 	defer response.Body.Close()
+	if restClient.Debug() {
+		restclient.DebugResponse(response)
+	}
+
 	result, err := NewGetPhotosResponse(response.Body)
 	if err != nil {
 		return nil, err

@@ -5,15 +5,16 @@ import (
 	"net/http"
 
 	"github.com/dghubble/oauth1"
+	"github.com/jsaund/gorest/restclient"
 )
 
 const (
 	consumerKey      = "8C6ImXPi4dKEnOWC3YwPnKQO1QIYbqaystDCsijC"
 	consumerSecret   = "FJMl9qrMv2b96B103TYZbxkJpH7DsHkzWinAfUIg"
 	fiveHundredPxAPI = "https://api.500px.com/v1"
+	debugHttp        = true
 )
 
-var client *http.Client
 var fiveHundredPxConfig = oauth1.Config{
 	ConsumerKey:    consumerKey,
 	ConsumerSecret: consumerSecret,
@@ -26,11 +27,8 @@ var fiveHundredPxConfig = oauth1.Config{
 }
 
 func init() {
-	client = &http.Client{}
-}
-
-func getClient() *http.Client {
-	return client
+	restClient := restclient.NewDefaultClient(fiveHundredPxAPI, debugHttp, &http.Client{})
+	restclient.RegisterClient(restClient)
 }
 
 func Login(username, password string, callback LoginCallback) {
@@ -42,7 +40,9 @@ func Session(token, secret string) error {
 		return fmt.Errorf("Invalid token or secret")
 	}
 	clientToken := oauth1.NewToken(token, secret)
-	client = fiveHundredPxConfig.Client(oauth1.NoContext, clientToken)
+	httpClient := fiveHundredPxConfig.Client(oauth1.NoContext, clientToken)
+	restClient := restclient.NewDefaultClient(fiveHundredPxAPI, debugHttp, httpClient)
+	restclient.RegisterClient(restClient)
 	return nil
 }
 

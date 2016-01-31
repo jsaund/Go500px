@@ -8,10 +8,13 @@ package go500px
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"mime/multipart"
 	"net/http"
 	"net/url"
 	"strings"
+
+	"github.com/jsaund/gorest/restclient"
 )
 
 type PostCommentCallback interface {
@@ -21,7 +24,6 @@ type PostCommentCallback interface {
 }
 
 type PostCommentRequestBuilderImpl struct {
-	baseUrl            string
 	pathSubstitutions  map[string]string
 	queryParams        url.Values
 	postFormParams     url.Values
@@ -30,9 +32,8 @@ type PostCommentRequestBuilderImpl struct {
 	headerParams       map[string]string
 }
 
-func NewPostCommentRequestBuilder(baseUrl string) PostCommentRequestBuilder {
+func NewPostCommentRequestBuilder() PostCommentRequestBuilder {
 	return &PostCommentRequestBuilderImpl{
-		baseUrl:            baseUrl,
 		pathSubstitutions:  make(map[string]string),
 		queryParams:        url.Values{},
 		postFormParams:     url.Values{},
@@ -42,12 +43,12 @@ func NewPostCommentRequestBuilder(baseUrl string) PostCommentRequestBuilder {
 }
 
 func (b *PostCommentRequestBuilderImpl) PhotoID(id string) PostCommentRequestBuilder {
-	b.pathSubstitutions["id"] = string(id)
+	b.pathSubstitutions["id"] = fmt.Sprintf("%v", id)
 	return b
 }
 
 func (b *PostCommentRequestBuilderImpl) Body(body string) PostCommentRequestBuilder {
-	b.postFormParams.Add("body", string(body))
+	b.postFormParams.Add("body", fmt.Sprintf("%v", body))
 	return b
 }
 
@@ -64,7 +65,11 @@ func (b *PostCommentRequestBuilderImpl) applyPathSubstituions(api string) string
 }
 
 func (b *PostCommentRequestBuilderImpl) build() (req *http.Request, err error) {
-	url := b.baseUrl + b.applyPathSubstituions("/photos/{id}/comments")
+	restClient := restclient.GetClient()
+	if restClient == nil {
+		return nil, fmt.Errorf("A rest client has not been registered yet. You must call client.RegisterClient first")
+	}
+	url := restClient.BaseURL() + b.applyPathSubstituions("/photos/{id}/comments")
 	httpMethod := "POST"
 	switch httpMethod {
 	case "POST", "PUT":
@@ -126,12 +131,25 @@ func (b *PostCommentRequestBuilderImpl) Run() (PostCommentResponse, error) {
 	}
 	request.URL.RawQuery = request.URL.Query().Encode()
 
-	response, err := getClient().Do(request)
+	restClient := restclient.GetClient()
+	if restClient == nil {
+		return nil, fmt.Errorf("A rest client has not been registered yet. You must call client.RegisterClient first")
+	}
+
+	if restClient.Debug() {
+		restclient.DebugRequest(request)
+	}
+
+	response, err := restClient.HttpClient().Do(request)
 	if err != nil {
 		return nil, err
 	}
 
 	defer response.Body.Close()
+	if restClient.Debug() {
+		restclient.DebugResponse(response)
+	}
+
 	result, err := NewPostCommentResponse(response.Body)
 	if err != nil {
 		return nil, err
