@@ -150,11 +150,7 @@ func (b *PostCommentRequestBuilderImpl) Run() (PostCommentResponse, error) {
 		restclient.DebugResponse(response)
 	}
 
-	result, err := NewPostCommentResponse(response.Body)
-	if err != nil {
-		return nil, err
-	}
-	return result, nil
+	return NewPostCommentResponse(response.Body)
 }
 
 func (b *PostCommentRequestBuilderImpl) RunAsync(callback PostCommentCallback) {

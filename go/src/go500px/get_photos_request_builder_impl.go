@@ -180,11 +180,7 @@ func (b *GetPhotosRequestBuilderImpl) Run() (GetPhotosResponse, error) {
 		restclient.DebugResponse(response)
 	}
 
-	result, err := NewGetPhotosResponse(response.Body)
-	if err != nil {
-		return nil, err
-	}
-	return result, nil
+	return NewGetPhotosResponse(response.Body)
 }
 
 func (b *GetPhotosRequestBuilderImpl) RunAsync(callback GetPhotosCallback) {

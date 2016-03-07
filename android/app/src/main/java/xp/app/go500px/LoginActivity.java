@@ -3,7 +3,6 @@ package xp.app.go500px;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -15,8 +14,6 @@ import android.widget.EditText;
 import go.go500px.Go500px;
 import xp.app.go500px.util.LoginHelper;
 
-import java.lang.ref.WeakReference;
-
 public class LoginActivity extends AppCompatActivity {
   private static final String TAG = "LoginActivity";
 
@@ -27,7 +24,7 @@ public class LoginActivity extends AppCompatActivity {
   private AppCompatTextView mError;
   private Button mLogin;
   private ProgressDialog mProgressDialog;
-  private LoginHanlder mHandler;
+  private LoginHandler mHandler;
 
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -45,7 +42,7 @@ public class LoginActivity extends AppCompatActivity {
 
     findViewById(R.id.login_container).setVisibility(View.VISIBLE);
 
-    mHandler = new LoginHanlder(this);
+    mHandler = new LoginHandler(this);
 
     mUsername = (EditText) findViewById(R.id.email);
     mPassword = (EditText) findViewById(R.id.password);
@@ -70,20 +67,20 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     public void OnError(String s) {
-      final Message msg = mHandler.obtainMessage(LoginHanlder.MSG_LOGIN_ERROR, s);
+      final Message msg = mHandler.obtainMessage(LoginHandler.MSG_LOGIN_ERROR, s);
       mHandler.sendMessage(msg);
     }
 
     @Override
     public void OnStart() {
-      final Message msg = mHandler.obtainMessage(LoginHanlder.MSG_LOGIN_START);
+      final Message msg = mHandler.obtainMessage(LoginHandler.MSG_LOGIN_START);
       mHandler.sendMessage(msg);
     }
 
     @Override
     public void OnSuccess(String token, String secret) {
       LoginHelper.saveLoginCredentials(LoginActivity.this, token, secret);
-      final Message msg = mHandler.obtainMessage(LoginHanlder.MSG_LOGIN_SUCCESS);
+      final Message msg = mHandler.obtainMessage(LoginHandler.MSG_LOGIN_SUCCESS);
       mHandler.sendMessage(msg);
     }
   }
@@ -98,23 +95,17 @@ public class LoginActivity extends AppCompatActivity {
     }
   }
 
-  private static class LoginHanlder extends Handler {
+  private static class LoginHandler extends UIHandler<LoginActivity> {
     private static final int MSG_LOGIN_START = 1;
     private static final int MSG_LOGIN_ERROR = 2;
     private static final int MSG_LOGIN_SUCCESS = 3;
 
-    private final WeakReference<LoginActivity> mReference;
-    LoginHanlder(LoginActivity activity) {
-      mReference = new WeakReference<>(activity);
+    LoginHandler(LoginActivity activity) {
+      super(activity);
     }
 
     @Override
-    public void handleMessage(Message msg) {
-      final LoginActivity activity = mReference.get();
-      if (activity == null) {
-        return;
-      }
-
+    public void handleMessage(Message msg, LoginActivity activity) {
       switch (msg.what) {
         case MSG_LOGIN_START:
           activity.mError.setVisibility(View.GONE);

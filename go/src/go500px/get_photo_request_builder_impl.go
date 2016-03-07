@@ -165,11 +165,7 @@ func (b *GetPhotoRequestBuilderImpl) Run() (GetPhotoResponse, error) {
 		restclient.DebugResponse(response)
 	}
 
-	result, err := NewGetPhotoResponse(response.Body)
-	if err != nil {
-		return nil, err
-	}
-	return result, nil
+	return NewGetPhotoResponse(response.Body)
 }
 
 func (b *GetPhotoRequestBuilderImpl) RunAsync(callback GetPhotoCallback) {
